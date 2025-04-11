@@ -1,15 +1,18 @@
 import React from "react";
+import { Trash2 } from "lucide-react";
 import type { Project } from "../types";
 
 interface ProjectCardProps {
   project: Project;
   onAddToCart: (id: string) => void;
+  onRemoveFromCart?: (id: string) => void;
   isInCart: boolean;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   onAddToCart,
+  onRemoveFromCart,
   isInCart,
 }) => {
   return (
@@ -33,17 +36,27 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               </div>
               <p className="text-sm text-gray-500">By {project.author}</p>
             </div>
-            <button
-              onClick={() => onAddToCart(project.id.toString())}
-              className={`px-3 py-1 rounded-md text-sm font-medium ${
-                isInCart
-                  ? "bg-gray-200 text-gray-600"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
-              }`}
-              disabled={isInCart}
-            >
-              {isInCart ? "In Cart" : "Add to Cart"}
-            </button>
+            {isInCart && onRemoveFromCart ? (
+              <button
+                onClick={() => onRemoveFromCart(project.id.toString())}
+                className="px-3 py-1 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 border border-red-200 flex items-center gap-2"
+              >
+                <Trash2 size={16} />
+                Remove
+              </button>
+            ) : (
+              <button
+                onClick={() => onAddToCart(project.id.toString())}
+                className={`px-3 py-1 rounded-md text-sm font-medium ${
+                  isInCart
+                    ? "bg-gray-200 text-gray-600"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
+                disabled={isInCart}
+              >
+                {isInCart ? "In Cart" : "Add to Cart"}
+              </button>
+            )}
           </div>
           <p className="mt-2 text-sm text-gray-500 sm:mt-1">
             {project.description}

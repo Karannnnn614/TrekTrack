@@ -41,3 +41,13 @@ export const getCartItems = async (userId: number) => {
   );
   return response.data;
 };
+
+export const removeFromCart = async (userId: number, projectId: number) => {
+  const response = await api.delete<{ success: boolean; message: string }>(
+    `/cart/${projectId}`,
+    {
+      params: { userId },
+    }
+  );
+  return response.data;
+};
