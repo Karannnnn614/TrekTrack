@@ -36,14 +36,21 @@ function App() {
     data: projectsData,
     isLoading: isLoadingProjects,
     error: projectsError,
+    isError: isProjectsError,
   } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjects(),
+    retry: 1, // Only retry once for faster fallback to dummy data
   });
 
-  const { data: cartData, isLoading: isLoadingCart } = useQuery({
+  const {
+    data: cartData,
+    isLoading: isLoadingCart,
+    error: cartError,
+  } = useQuery({
     queryKey: ["cart", mockUser.id],
     queryFn: () => getCartItems(mockUser.id),
+    retry: 1,
   });
 
   const addToCartMutation = useMutation({
@@ -105,15 +112,22 @@ function App() {
   if (isLoadingProjects || isLoadingCart) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        Loading...
+        <div className="text-gray-600">Loading...</div>
       </div>
     );
   }
 
-  if (projectsError) {
+  if (isProjectsError && projectsError instanceof Error) {
+    console.warn(
+      "Using fallback data due to API error:",
+      projectsError.message
+    );
+  }
+
+  if (!projectsData?.data) {
     return (
       <div className="flex min-h-screen items-center justify-center text-red-500">
-        Error loading projects
+        Unable to load projects data
       </div>
     );
   }
