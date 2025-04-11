@@ -1,4 +1,4 @@
-# Project Bolt
+# Project TreTrack
 
 A full-stack application built with React, TypeScript, and Node.js.
 
